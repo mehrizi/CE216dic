@@ -35,6 +35,8 @@ public class HelloApplication extends Application {
         stage.setTitle("Crazy 11 Dic!");
         stage.setScene(scene);
         stage.show();
+
+
     }
 
     public static void main(String[] args) {

@@ -34,31 +34,30 @@
       </HBox>
       <HBox prefHeight="40.0" prefWidth="600.0">
          <children>
-            <ComboBox id="fromLanguageCombo" fx:id="fromLanguageCombo" prefWidth="70.0" styleClass="form-control">
+            <ComboBox id="fromLanguageCombo" fx:id="fromLanguageCombo" prefWidth="110.0" styleClass="form-control">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" top="5.0" />
                </HBox.margin></ComboBox>
-            <TextField fx:id="inputWord" styleClass="form-control">
+            <TextField fx:id="inputWord" styleClass="btn">
                <HBox.margin>
                   <Insets bottom="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </TextField>
-            <Button mnemonicParsing="false" text="Search">
-               <styleClass>
-                  <String fx:value="btn" />
-                  <String fx:value="btn-primary" />
-               </styleClass>
-            </Button>
+            <Button fx:id="searchButton" mnemonicParsing="false" text="Search" />
          </children>
       </HBox>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <children>
             <ListView prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </ListView>
-            <ListView prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <ListView fx:id="translationResultList" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </ListView>
          </children>
       </HBox>
    </children>

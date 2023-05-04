@@ -4,7 +4,8 @@ public class Language {
 
     public static String[] getAvailableLanguages()
     {
-        String[] arr= {"EN","FR","TR"};
+        String[] arr= { "English", "French", "German", "Turkish", "Italian", "Swedish" ,"Greek"};
+
         return arr;
     }
 }
