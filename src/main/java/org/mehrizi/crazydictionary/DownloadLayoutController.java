@@ -32,10 +32,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class DownloadLayoutController implements Initializable {
 
@@ -254,22 +251,24 @@ public class DownloadLayoutController implements Initializable {
                 continue;
             String name = (String) item.get("name");
 
-            // iterating over needed languages to see if the item has one of these lang
-            for (String lang : availableLangs) {
-                if (name.contains(lang)) {
-                    // first let the correct src package
-                    JSONArray releases = (JSONArray) item.get("releases");
-                    for (int j = 0; j < releases.length(); j++) {
-                        JSONObject release = (JSONObject) releases.get(j);
+            // iterating over needed languages to see if from and to both exist in the name
+            String[] names = name.split("-");
 
-                        String platform = (String) release.get("platform");
-                        if (platform.equals("src")) {
-                            urlsToDownload.add((String) release.get("URL"));
-                            totalSize += Integer.parseInt(release.get("size").toString());
-                        }
+            if (Arrays.asList(availableLangs).contains(names[0]) &&
+                    Arrays.asList(availableLangs).contains(names[1])) {
+
+                // choosing correct src release
+                JSONArray releases = (JSONArray) item.get("releases");
+                for (int j = 0; j < releases.length(); j++) {
+                    JSONObject release = (JSONObject) releases.get(j);
+
+                    String platform = (String) release.get("platform");
+                    if (platform.equals("src")) {
+                        urlsToDownload.add((String) release.get("URL"));
+                        totalSize += Integer.parseInt(release.get("size").toString());
                     }
-
                 }
+
             }
         }
 
