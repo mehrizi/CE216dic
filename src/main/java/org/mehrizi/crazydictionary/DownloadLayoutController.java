@@ -1,6 +1,7 @@
 package org.mehrizi.crazydictionary;
 
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -50,6 +51,9 @@ public class DownloadLayoutController implements Initializable {
     @FXML
     private ProgressBar downloadProgress;
 
+    @FXML
+    private Text progressBarText;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -83,17 +87,108 @@ public class DownloadLayoutController implements Initializable {
         downloadButton.setDisable(true);
         fetchButton.setDisable(true);
         Files.createDirectories(Paths.get(HelloApplication.dicPath));
+        progressBarText.setText("Downloading...");
 
-        for (String fileUrl : urlsToDownload) {
-            URL url = new URL(fileUrl);
-            String fileName = HelloApplication.dicPath+ FilenameUtils.getName(url.getPath());
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                for (String fileUrl : urlsToDownload) {
+                    URL url = null;
+                    try {
+                        url = new URL(fileUrl);
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    String fileName = HelloApplication.dicPath+ FilenameUtils.getName(url.getPath());
 
-            FileUtils.copyURLToFile(url, new File(fileName));
-            Long bytes = Files.size(Path.of(fileName));
-            downloadedSize +=  bytes.intValue();
-            downloadProgress.setProgress((double) downloadedSize/totalSize);
+                    try {
+                        FileUtils.copyURLToFile(url, new File(fileName));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Long bytes = null;
+                    try {
+                        bytes = Files.size(Path.of(fileName));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    downloadedSize +=  bytes.intValue();
+                    downloadProgress.setProgress((double) downloadedSize/totalSize);
+                }
+                return null;
+            }
+        };
 
-        }
+
+        task.setOnFailed(wse -> {
+            wse.getSource().getException().printStackTrace();
+            downloadButton.setDisable(false);
+            fetchButton.setDisable(false);
+            try {
+                Files.deleteIfExists(Paths.get(HelloApplication.dicPath));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            progressBarText.setText("Download error! Please Try again");
+        });
+
+        // If the task completed successfully, perform other updates here
+        task.setOnSucceeded(wse -> {
+            try {
+                handleExtract();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        new Thread(task).start();
+
+    }
+    private void handleExtract() throws IOException {
+
+        progressBarText.setText("Extracting...");
+        downloadProgress.setProgress(0);
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                for (String fileUrl : urlsToDownload) {
+                    URL url = null;
+                    try {
+                        url = new URL(fileUrl);
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    String fileName = HelloApplication.dicPath+ FilenameUtils.getName(url.getPath());
+
+                    try {
+                        FileUtils.copyURLToFile(url, new File(fileName));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Long bytes = null;
+                    try {
+                        bytes = Files.size(Path.of(fileName));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    downloadedSize +=  bytes.intValue();
+                    downloadProgress.setProgress((double) downloadedSize/totalSize);
+                }
+                return null;
+            }
+        };
+
+
+        task.setOnFailed(wse -> {
+            wse.getSource().getException().printStackTrace();
+        });
+
+        // If the task completed successfully, perform other updates here
+        task.setOnSucceeded(wse -> {
+            System.out.println("Done!");
+        });
+        new Thread(task).start();
+
     }
 
     private void handleFetch() throws IOException {
