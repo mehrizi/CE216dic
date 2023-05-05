@@ -55,6 +55,7 @@ public class MainLayoutController implements Initializable {
             }
         });
 
+
     }
 
     private void handleTranslation()

@@ -1,5 +1,10 @@
 package org.mehrizi.crazydictionary;
 
+import java.io.RandomAccessFile;
+import java.net.URL;
+import java.nio.file.Files;
+
+//import itkach.slob.Slob;
 import javafx.application.Application;
 import javafx.beans.value.ObservableListValue;
 import javafx.collections.FXCollections;
@@ -12,13 +17,34 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class HelloApplication extends Application {
 
+//    Path dictionariesPath = Paths.get("C:/mehrizi-dictionaries");
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+
+//        String testSlobName = "freedict-eng-tur.slob";
+//        ClassLoader classLoader = getClass().getClassLoader();
+//        URL resource = classLoader.getResource(testSlobName);
+//        RandomAccessFile f = new RandomAccessFile(resource.getFile(), "r");
+//        Slob s = new Slob(f.getChannel(), testSlobName);
+//
+//        Slob.Blob earthBlob = Slob.find("earth", s).next();
+
+//        System.out.println(s.);
+
+//        if (!Files.exists(dictionariesPath))
+//        {
+//            showDictionaryDownloadWindow(stage);
+//            return;
+//        }
+
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("dictionary-view.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load(), 640, 440);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
@@ -36,6 +62,12 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
+
+
+
+    }
+
+    public void showDictionaryDownloadWindow(Stage stage) throws IOException{
 
     }
 
