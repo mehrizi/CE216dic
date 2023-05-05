@@ -7,9 +7,8 @@ module org.mehrizi.crazydictionary {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires java.logging;
-//    requires slobj;
-//    requires slobj;
     requires org.json;
+    requires org.apache.commons.io;
 
     opens org.mehrizi.crazydictionary to javafx.fxml;
     exports org.mehrizi.crazydictionary;

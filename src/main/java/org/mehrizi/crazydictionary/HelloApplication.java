@@ -24,39 +24,22 @@ import java.nio.file.Paths;
 
 public class HelloApplication extends Application {
 
-//    Path dictionariesPath = Paths.get("C:/mehrizi-dictionaries");
+    public static String dicPath = System.getenv("SystemDrive")+"/mehrizi-dictionaries/";
     @Override
     public void start(Stage stage) throws IOException {
 
-//        String testSlobName = "freedict-eng-tur.slob";
-//        ClassLoader classLoader = getClass().getClassLoader();
-//        URL resource = classLoader.getResource(testSlobName);
-//        RandomAccessFile f = new RandomAccessFile(resource.getFile(), "r");
-//        Slob s = new Slob(f.getChannel(), testSlobName);
-//
-//        Slob.Blob earthBlob = Slob.find("earth", s).next();
 
-//        System.out.println(s.);
-
-//        if (!Files.exists(dictionariesPath))
-//        {
-//            showDictionaryDownloadWindow(stage);
-//            return;
-//        }
+        Path dictionariesPath = Paths.get(dicPath);
+        if (!Files.exists(dictionariesPath))
+        {
+            showDictionaryDownloadWindow(stage);
+            return;
+        }
 
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("dictionary-view.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load(), 640, 440);
-        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
-//        ComboBox fromLanguageCombo = (ComboBox) scene.lookup("#fromLanguageCombo");
-
-//        ObservableList<String> hobbies = FXCollections.observableArrayList("EN","FR","TR");
-
-//        fromLanguageCombo.getItems().addAll(FXCollections.observableArrayList(Language.getAvailableLanguages()));
-//        fromLanguageCombo.setVisibleRowCount(3);
-//        fromLanguageCombo.getSelectionModel().selectFirst();
-//        fromLanguageCombo.setValue("EN");
 
         stage.setTitle("Crazy 11 Dic!");
         stage.setScene(scene);
@@ -68,7 +51,14 @@ public class HelloApplication extends Application {
     }
 
     public void showDictionaryDownloadWindow(Stage stage) throws IOException{
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("download-view.fxml"));
 
+        Scene scene = new Scene(fxmlLoader.load(), 640, 440);
+
+
+        stage.setTitle("Crazy 11 Dic!");
+        stage.setScene(scene);
+        stage.show();
     }
 
     public static void main(String[] args) {

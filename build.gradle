@@ -44,9 +44,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 
-    implementation files('libs/slobj.jar')
-//    implementation fileTree('libs')
     implementation('org.json:json:20230227')
+    implementation('commons-io:commons-io:2.11.0')
 }
 
 test {
