@@ -46,6 +46,8 @@ dependencies {
 
     implementation('org.json:json:20230227')
     implementation('commons-io:commons-io:2.11.0')
+    implementation('org.apache.commons:commons-compress:1.23.0')
+    implementation('org.tukaani:xz:1.8')
 }
 
 test {

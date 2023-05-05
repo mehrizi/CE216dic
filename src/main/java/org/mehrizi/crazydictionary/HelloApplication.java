@@ -4,7 +4,6 @@ import java.io.RandomAccessFile;
 import java.net.URL;
 import java.nio.file.Files;
 
-//import itkach.slob.Slob;
 import javafx.application.Application;
 import javafx.beans.value.ObservableListValue;
 import javafx.collections.FXCollections;
@@ -40,13 +39,9 @@ public class HelloApplication extends Application {
 
         Scene scene = new Scene(fxmlLoader.load(), 640, 440);
 
-
         stage.setTitle("Crazy 11 Dic!");
         stage.setScene(scene);
         stage.show();
-
-
-
 
     }
 
@@ -54,7 +49,6 @@ public class HelloApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("download-view.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load(), 640, 440);
-
 
         stage.setTitle("Crazy 11 Dic!");
         stage.setScene(scene);

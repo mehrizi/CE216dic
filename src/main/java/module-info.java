@@ -9,6 +9,8 @@ module org.mehrizi.crazydictionary {
     requires java.logging;
     requires org.json;
     requires org.apache.commons.io;
+    requires org.apache.commons.compress;
+    requires org.tukaani.xz;
 
     opens org.mehrizi.crazydictionary to javafx.fxml;
     exports org.mehrizi.crazydictionary;
