@@ -60,7 +60,8 @@ public class MainLayoutController implements Initializable {
 
     private void handleTranslation()
     {
-        Translation result = new Translation(fromLanguageCombo.getValue().toString());
+        String fromLang = Language.getShortForm(fromLanguageCombo.getValue().toString());
+        Translation result = new Translation(fromLang);
         ArrayList<TranslatedItem> items = result.translate(inputWord.getText());
         for(TranslatedItem item:items){
             for (String word: item.translations)

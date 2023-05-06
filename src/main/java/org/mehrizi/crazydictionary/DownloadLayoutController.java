@@ -419,9 +419,8 @@ public class DownloadLayoutController implements Initializable {
                 }
             }
 //            // making the dictionary file to write to
-            String dictionaryPath = path.replace(".tei", ".crazydic");
-            String indexPath = path.replace(".tei", ".crazydic.ind");
-            FileWriter dictionaryFile = new FileWriter(dictionaryPath);
+            String dictionaryPath = path.replace(".tei", ".mmsdic");
+            String indexPath = path.replace(".tei", ".mmsdic.ind");
             FileWriter indexFile = new FileWriter(indexPath);
             final Integer[] index = {0};
             dictionary.forEach((character, entryList) -> {
@@ -430,18 +429,22 @@ public class DownloadLayoutController implements Initializable {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                entryList.forEach((words) -> {
-                    index[0]++;
-                    try {
+                FileWriter dictionaryFile = null;
+                try {
+                    dictionaryFile = new FileWriter(dictionaryPath.replace(".mmsdic","-"+index[0].toString()+".mmsdic"));
+                    for (ArrayList<String> words:entryList){
                         dictionaryFile.write(String.join(":", words) + System.lineSeparator());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
                     }
-                });
+                    dictionaryFile.close();
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                index[0]++;
 
             });
 
-            dictionaryFile.close();
             indexFile.close();
 
         } catch (FileNotFoundException e) {

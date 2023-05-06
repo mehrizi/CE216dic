@@ -26,41 +26,43 @@ public class HelloApplication extends Application {
 
     public static HelloApplication myApp;
     public static Stage myStage;
-    public static String dicPath = System.getenv("SystemDrive")+"/mehrizi-dictionaries/";
+    public static String dicPath = System.getenv("SystemDrive") + "/mehrizi-dictionaries/";
 
-    public HelloApplication(){
+    public HelloApplication() {
         myApp = this;
     }
+
     @Override
     public void start(Stage stage) throws IOException, XMLStreamException {
 
-        myStage=stage;
-       // DownloadLayoutController.parseOutXml(dicPath+"deu-ita.tei");
+        myStage = stage;
+        // DownloadLayoutController.parseOutXml(dicPath+"deu-ita.tei");
 
+        stage.setTitle("Mahdi Dic!");
 
         Path dictionariesPath = Paths.get(dicPath);
         if (!Files.exists(dictionariesPath))
-        {
             showDictionaryDownloadWindow(stage);
-            return;
-        }
+        else
+            showDictionaryWindow(stage);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("dictionary-view.fxml"));
-
-        Scene scene = new Scene(fxmlLoader.load(), 640, 440);
-
-        stage.setTitle("Crazy 11 Dic!");
-        stage.setScene(scene);
-        stage.show();
 
     }
 
-    public void showDictionaryDownloadWindow(Stage stage) throws IOException{
+    public void showDictionaryDownloadWindow(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("download-view.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load(), 640, 440);
 
-        stage.setTitle("Crazy 11 Dic!");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void showDictionaryWindow(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("dictionary-view.fxml"));
+
+        Scene scene = new Scene(fxmlLoader.load(), 640, 440);
+
         stage.setScene(scene);
         stage.show();
     }
