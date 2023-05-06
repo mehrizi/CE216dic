@@ -22,13 +22,20 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -229,7 +236,69 @@ public class DownloadLayoutController implements Initializable {
 
         // If the task completed successfully, perform other updates here
         task.setOnSucceeded(wse -> {
-            System.out.println("Done!");
+            try {
+                handleParsing();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ArchiveException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        new Thread(task).start();
+
+    }
+    private void handleParsing() throws IOException, ArchiveException {
+
+        progressBarText.setText("Parsing dictionaries to my indexed system! Some of the files are very big we need indexes!");
+        downloadProgress.setProgress(0);
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                File folder = new File(HelloApplication.dicPath);
+                File[] listOfFiles = folder.listFiles();
+
+                for (int i = 0; i < listOfFiles.length; i++) {
+                    if (listOfFiles[i].isFile()) {
+                        String teiFilePath = listOfFiles[i].getPath();
+
+                        parseOutXml(teiFilePath);
+
+                        // Lets delete archives
+                        Files.deleteIfExists(Path.of(teiFilePath));
+
+                        downloadProgress.setProgress((double) i / listOfFiles.length);
+
+                    }
+                }
+
+                return null;
+            }
+        };
+
+
+        task.setOnFailed(wse -> {
+            wse.getSource().getException().printStackTrace();
+            downloadButton.setDisable(true);
+            fetchButton.setDisable(false);
+            try {
+                Files.deleteIfExists(Paths.get(HelloApplication.dicPath));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            progressBarText.setText("Extraction error! Please Try again");
+        });
+
+        // If the task completed successfully, perform other updates here
+        task.setOnSucceeded(wse -> {
+            progressBarText.setText("Hurray!");
+            try {
+                HelloApplication.myApp.start(HelloApplication.myStage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (XMLStreamException e) {
+                throw new RuntimeException(e);
+            }
         });
         new Thread(task).start();
 
@@ -278,6 +347,108 @@ public class DownloadLayoutController implements Initializable {
 
         downloadButton.setDisable(false);
         fetchButton.setDisable(false);
+
+    }
+
+    public static void parseOutXml(String path) throws IOException {
+
+        boolean bOrth = false;
+        boolean bQuote = false;
+        HashMap<String, Integer> indexMap = new HashMap<>();
+        HashMap<String, ArrayList<ArrayList<String>>> dictionary = new HashMap<>();
+
+        try {
+            XMLInputFactory factory = XMLInputFactory.newInstance();
+            XMLEventReader eventReader =
+                    factory.createXMLEventReader(new FileReader(path));
+
+            ArrayList<String> entry = new ArrayList<>();
+            while (eventReader.hasNext()) {
+                XMLEvent event = eventReader.nextEvent();
+
+                switch (event.getEventType()) {
+                    case XMLStreamConstants.START_ELEMENT:
+                        StartElement startElement = event.asStartElement();
+                        String qName = startElement.getName().getLocalPart();
+
+                        if (qName.equalsIgnoreCase("entry")) {
+                            entry = new ArrayList<>();
+
+                        } else if (qName.equalsIgnoreCase("orth")) {
+                            bOrth = true;
+                        } else if (qName.equalsIgnoreCase("quote")) {
+                            bQuote = true;
+                        }
+                        break;
+
+                    case XMLStreamConstants.CHARACTERS:
+                        Characters characters = event.asCharacters();
+
+                        if (bOrth) {
+                            String word = characters.getData();
+//                            ByteBuffer buffer = StandardCharsets.UTF_8.encode(word);
+//
+//                            String utf8EncodedString = StandardCharsets.UTF_8.decode(buffer).toString();
+
+                            entry.add(word);//.toLowerCase(Locale.GERMANY));
+                            bOrth = false;
+                        }
+                        if (bQuote) {
+                            entry.add(characters.getData());
+                            bQuote = false;
+                        }
+                        break;
+
+                    case XMLStreamConstants.END_ELEMENT:
+                        EndElement endElement = event.asEndElement();
+
+                        if (endElement.getName().getLocalPart().equalsIgnoreCase("entry")) {
+                            String word = entry.get(0);
+                            String firstChar = String.valueOf(word.toLowerCase().charAt(0));
+//                            if (word.length()>1)
+//                                firstChar = firstChar + String.valueOf(word.charAt(1));
+
+                            if (!dictionary.containsKey(firstChar)) {
+                                dictionary.put((firstChar), new ArrayList<>());
+                            }
+
+                            dictionary.get(firstChar).add(entry);
+
+                        }
+                        break;
+                }
+            }
+//            // making the dictionary file to write to
+            String dictionaryPath = path.replace(".tei", ".crazydic");
+            String indexPath = path.replace(".tei", ".crazydic.ind");
+            FileWriter dictionaryFile = new FileWriter(dictionaryPath);
+            FileWriter indexFile = new FileWriter(indexPath);
+            final Integer[] index = {0};
+            dictionary.forEach((character, entryList) -> {
+                try {
+                    indexFile.write(character + ":" + index[0].toString() + System.lineSeparator());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                entryList.forEach((words) -> {
+                    index[0]++;
+                    try {
+                        dictionaryFile.write(String.join(":", words) + System.lineSeparator());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+            });
+
+            dictionaryFile.close();
+            indexFile.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        }
 
     }
 }

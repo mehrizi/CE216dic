@@ -16,6 +16,7 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
+import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -23,9 +24,18 @@ import java.nio.file.Paths;
 
 public class HelloApplication extends Application {
 
+    public static HelloApplication myApp;
+    public static Stage myStage;
     public static String dicPath = System.getenv("SystemDrive")+"/mehrizi-dictionaries/";
+
+    public HelloApplication(){
+        myApp = this;
+    }
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, XMLStreamException {
+
+        myStage=stage;
+       // DownloadLayoutController.parseOutXml(dicPath+"deu-ita.tei");
 
 
         Path dictionariesPath = Paths.get(dicPath);

@@ -11,6 +11,7 @@ module org.mehrizi.crazydictionary {
     requires org.apache.commons.io;
     requires org.apache.commons.compress;
     requires org.tukaani.xz;
+    requires java.xml;
 
     opens org.mehrizi.crazydictionary to javafx.fxml;
     exports org.mehrizi.crazydictionary;

@@ -13,7 +13,7 @@ public class Language {
         if (!shortForm)
             return getAvailableLanguages();
 
-        String[] arr= { "eng", "fra", "deu", "tur", "ita", "swe" ,"ell"};
+        String[] arr= { "eng", "fra"};//, "deu", "tur", "ita", "swe" ,"ell"};
 
         return arr;
     }
