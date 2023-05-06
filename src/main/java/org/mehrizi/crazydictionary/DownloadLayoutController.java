@@ -264,7 +264,7 @@ public class DownloadLayoutController implements Initializable {
 
                         parseOutXml(teiFilePath);
 
-                        // Lets delete archives
+                        // Lets delete .tei file
                         Files.deleteIfExists(Path.of(teiFilePath));
 
                         downloadProgress.setProgress((double) i / listOfFiles.length);
@@ -354,13 +354,12 @@ public class DownloadLayoutController implements Initializable {
 
         boolean bOrth = false;
         boolean bQuote = false;
-        HashMap<String, Integer> indexMap = new HashMap<>();
-        HashMap<String, ArrayList<ArrayList<String>>> dictionary = new HashMap<>();
+        HashMap<Character, ArrayList<ArrayList<String>>> dictionary = new HashMap<>();
 
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             XMLEventReader eventReader =
-                    factory.createXMLEventReader(new FileReader(path));
+                    factory.createXMLEventReader(new FileReader(path,StandardCharsets.UTF_8));
 
             ArrayList<String> entry = new ArrayList<>();
             while (eventReader.hasNext()) {
@@ -386,11 +385,7 @@ public class DownloadLayoutController implements Initializable {
 
                         if (bOrth) {
                             String word = characters.getData();
-//                            ByteBuffer buffer = StandardCharsets.UTF_8.encode(word);
-//
-//                            String utf8EncodedString = StandardCharsets.UTF_8.decode(buffer).toString();
-
-                            entry.add(word);//.toLowerCase(Locale.GERMANY));
+                            entry.add(word);
                             bOrth = false;
                         }
                         if (bQuote) {
@@ -404,9 +399,7 @@ public class DownloadLayoutController implements Initializable {
 
                         if (endElement.getName().getLocalPart().equalsIgnoreCase("entry")) {
                             String word = entry.get(0);
-                            String firstChar = String.valueOf(word.toLowerCase().charAt(0));
-//                            if (word.length()>1)
-//                                firstChar = firstChar + String.valueOf(word.charAt(1));
+                            Character firstChar = word.toLowerCase().charAt(0);
 
                             if (!dictionary.containsKey(firstChar)) {
                                 dictionary.put((firstChar), new ArrayList<>());
@@ -431,7 +424,7 @@ public class DownloadLayoutController implements Initializable {
                 }
                 FileWriter dictionaryFile = null;
                 try {
-                    dictionaryFile = new FileWriter(dictionaryPath.replace(".mmsdic","-"+index[0].toString()+".mmsdic"));
+                    dictionaryFile = new FileWriter(dictionaryPath.replace(".mmsdic","-"+index[0].toString()+".mmsdic"),StandardCharsets.UTF_8);
                     for (ArrayList<String> words:entryList){
                         dictionaryFile.write(String.join(":", words) + System.lineSeparator());
                     }

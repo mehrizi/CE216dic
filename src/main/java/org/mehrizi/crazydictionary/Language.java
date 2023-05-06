@@ -26,4 +26,13 @@ public class Language {
         }
         return "";
     }
+    public static String getLongForm(String shortForm) {
+        String[] shortForms=getAvailableLanguages(true);
+        for (int i=0; i<shortForms.length;i++){
+            if (shortForm.equals(shortForms[i]))
+                return getAvailableLanguages()[i];
+
+        }
+        return "";
+    }
 }

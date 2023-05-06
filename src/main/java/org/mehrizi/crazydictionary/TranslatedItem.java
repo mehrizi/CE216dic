@@ -6,19 +6,22 @@ public class TranslatedItem {
 
     private String targetLang;
 
-    public ArrayList<String> translations = new ArrayList<>();
+    public ArrayList<String> words = new ArrayList<>();
 
     public String getTargetLang() {
         return targetLang;
+    }
+    public String getFullTargetLang() {
+        return Language.getLongForm(targetLang);
     }
     public TranslatedItem(String targetLang)
     {
         this.targetLang = targetLang;
     }
 
-    public void addTranslation(String word)
+    public void addWord(String word)
     {
-        translations.add(word);
+        words.add(word);
     }
 
 

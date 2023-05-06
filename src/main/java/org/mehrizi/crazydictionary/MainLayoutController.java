@@ -13,6 +13,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -33,10 +34,12 @@ public class MainLayoutController implements Initializable {
     private TextField inputWord;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Positioning
-//        helpButton.
+
+        System.out.println(Charset.defaultCharset());
+
+
         fromLanguageCombo.getItems().addAll(FXCollections.observableArrayList(Language.getAvailableLanguages()));
-        fromLanguageCombo.setVisibleRowCount(3);
+        fromLanguageCombo.setVisibleRowCount(6);
         fromLanguageCombo.getSelectionModel().selectFirst();
         fromLanguageCombo.setValue("English");
 
@@ -62,11 +65,16 @@ public class MainLayoutController implements Initializable {
     {
         String fromLang = Language.getShortForm(fromLanguageCombo.getValue().toString());
         Translation result = new Translation(fromLang);
-        ArrayList<TranslatedItem> items = result.translate(inputWord.getText());
-        for(TranslatedItem item:items){
-            for (String word: item.translations)
+        result.translate(inputWord.getText());
+        translationResultList.getItems().removeAll();
+        for(TranslatedItem item:result.translations){
+            int i = 0;
+            for (String word: item.words)
             {
-                translationResultList.getItems().add(item.getTargetLang()+':'+word);
+                if (i==0)
+                    translationResultList.getItems().add(item.getFullTargetLang() );
+                translationResultList.getItems().add("       "+word);
+                i++;
             }
 
         }
