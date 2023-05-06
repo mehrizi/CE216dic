@@ -34,7 +34,7 @@ public class Translation {
                 Translation translateThrough = new Translation(t.getTargetLang());
                 for(String w:t.words){
                     TranslatedItem newTranslation = translateThrough.translate(w,untranslated);
-                    if (newTranslation.words.size() == 0)
+                    if (newTranslation==null || newTranslation.words.size() == 0)
                         continue;
 
                     translations.add(newTranslation);
