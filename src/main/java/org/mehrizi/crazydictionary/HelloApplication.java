@@ -67,6 +67,15 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
+    public void showEditWindow(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("edit-view.fxml"));
+
+        Scene scene = new Scene(fxmlLoader.load(), 640, 440);
+
+        stage.setScene(scene);
+        stage.show();
+    }
+
     public static void main(String[] args) {
         launch();
     }
