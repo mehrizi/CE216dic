@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class MainLayoutController implements Initializable {
@@ -41,7 +42,7 @@ public class MainLayoutController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         instance = this;
-        fromLanguageCombo.getItems().addAll(FXCollections.observableArrayList(Language.getAvailableLanguages()));
+        fromLanguageCombo.getItems().addAll(FXCollections.observableArrayList(Language.instance().langs.values()));
         fromLanguageCombo.setVisibleRowCount(6);
         fromLanguageCombo.getSelectionModel().selectFirst();
         fromLanguageCombo.setValue("English");
@@ -56,7 +57,7 @@ public class MainLayoutController implements Initializable {
         inputWord.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.ENTER)
+//                if (event.getCode() == KeyCode.ENTER)
                     handleTranslation();
             }
         });
@@ -106,7 +107,7 @@ public class MainLayoutController implements Initializable {
                     spacer.setMinSize(10, 1);
 
                     Label txt = new Label();
-                    txt.setText(item.getFullTargetLang());
+                    txt.setText(Language.instance().langs.get(item.getTargetLang()));
 
                     hBox.getChildren().addAll(txt,spacer,editBtn);
                     translationResultList.getItems().add(hBox);// +  );

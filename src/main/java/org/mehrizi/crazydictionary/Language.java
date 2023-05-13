@@ -1,38 +1,38 @@
 package org.mehrizi.crazydictionary;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mehrizi.crazydictionary.EditLayoutController.item;
+
 public class Language {
 
-    public static String[] getAvailableLanguages() {
-        String[] arr = {"English", "French", "German", "Turkish", "Italian", "Swedish", "Greek"};
+    private static Language theInstance;
+    public static HashMap<String,String> langs= new HashMap<>();
 
-        return arr;
+    public static Language instance()
+    {
+        if (theInstance==(null)){
+            theInstance = new Language();
+        }
+        return theInstance;
     }
 
-    public static String[] getAvailableLanguages(Boolean shortForm) {
-        if (!shortForm)
-            return getAvailableLanguages();
+    private Language(){
+        langs.put("eng","English");
+        langs.put("fra","French");
+        langs.put("deu","German");
+        langs.put("tur","Turkish");
+        langs.put("ita","Italian");
+        langs.put("swe","Swedish");
+        langs.put("ell","Greek");
 
-        String[] arr = {"eng", "fra", "deu", "tur", "ita", "swe", "ell"};
-
-        return arr;
     }
-
     public static String getShortForm(String longForm) {
-        String[] longForms=getAvailableLanguages();
-        for (int i=0; i<longForms.length;i++){
-            if (longForm.equals(longForms[i]))
-                return getAvailableLanguages(true)[i];
-
-        }
-        return "";
-    }
-    public static String getLongForm(String shortForm) {
-        String[] shortForms=getAvailableLanguages(true);
-        for (int i=0; i<shortForms.length;i++){
-            if (shortForm.equals(shortForms[i]))
-                return getAvailableLanguages()[i];
-
-        }
+        for(Map.Entry<String, String> item:Language.instance().langs.entrySet()){
+            if (item.getValue() == longForm)
+                return item.getKey();
+        };
         return "";
     }
 }

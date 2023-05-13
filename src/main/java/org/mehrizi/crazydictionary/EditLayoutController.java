@@ -43,7 +43,7 @@ public class EditLayoutController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        explanationText.setText("You are editing definitions for "+word+" from language "+Language.getLongForm(fromLang) +" to "+item.getFullTargetLang());
+        explanationText.setText("You are editing definitions for "+word+" from language "+Language.instance().langs.get(fromLang) +" to "+Language.instance().langs.get(item.getTargetLang()));
         ArrayList<TextField> fields = new ArrayList<>();
         for (String translationText:item.words){
             TextField txtField = new TextField(translationText);
@@ -70,7 +70,7 @@ public class EditLayoutController implements Initializable {
             public void handle(MouseEvent event) {
                 try {
                     HelloApplication.myApp.showDictionaryWindow(HelloApplication.myStage);
-                    MainLayoutController.instance.setData(Language.getLongForm(fromLang),word);
+                    MainLayoutController.instance.setData(Language.instance().langs.get(fromLang),word);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -83,7 +83,7 @@ public class EditLayoutController implements Initializable {
                 try {
                     Obj.saveTranslations(item.getTargetLang(), word,fields);
                     HelloApplication.myApp.showDictionaryWindow(HelloApplication.myStage);
-                    MainLayoutController.instance.setData(Language.getLongForm(fromLang),word);
+                    MainLayoutController.instance.setData(Language.instance().langs.get(fromLang),word);
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);

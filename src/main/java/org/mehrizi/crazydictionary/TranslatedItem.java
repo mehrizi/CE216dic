@@ -11,9 +11,6 @@ public class TranslatedItem {
     public String getTargetLang() {
         return targetLang;
     }
-    public String getFullTargetLang() {
-        return Language.getLongForm(targetLang);
-    }
     public TranslatedItem(String targetLang)
     {
         this.targetLang = targetLang;

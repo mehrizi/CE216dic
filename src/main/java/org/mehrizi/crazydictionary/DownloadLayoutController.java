@@ -313,7 +313,6 @@ public class DownloadLayoutController implements Initializable {
         JSONArray apiResult = new JSONArray(json);
 
         // Now lets build items to download
-        String[] availableLangs = Language.getAvailableLanguages(true);
         for (int i = 0; i < apiResult.length(); i++) {
             JSONObject item = apiResult.getJSONObject(i);
             if (!item.has("name"))
@@ -323,8 +322,8 @@ public class DownloadLayoutController implements Initializable {
             // iterating over needed languages to see if from and to both exist in the name
             String[] names = name.split("-");
 
-            if (Arrays.asList(availableLangs).contains(names[0]) &&
-                    Arrays.asList(availableLangs).contains(names[1])) {
+            if (Language.instance().langs.containsKey(names[0]) &&
+                    Language.instance().langs.containsKey(names[1])) {
 
                 // choosing correct src release
                 JSONArray releases = (JSONArray) item.get("releases");

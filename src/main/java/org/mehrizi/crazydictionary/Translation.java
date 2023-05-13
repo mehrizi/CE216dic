@@ -124,9 +124,10 @@ public class Translation {
     public ArrayList<String> targetLangs() {
         ArrayList<String> targetLanguages = new ArrayList<>();
         int i = 0;
-        for (String lang : Language.getAvailableLanguages(true)) {
-            if (lang != fromLang) {
-                targetLanguages.add(lang);
+
+        for (Map.Entry<String, String> lang: Language.langs.entrySet()) {
+            if (!lang.getKey().equals(fromLang)) {
+                targetLanguages.add(lang.getKey());
             }
         }
         return targetLanguages;
