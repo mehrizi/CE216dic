@@ -43,10 +43,12 @@ import java.util.*;
 
 public class DownloadLayoutController implements Initializable {
 
-    private String apiURL = "https://freedict.org/freedict-database.json";
+    public static String apiURL = "https://freedict.org/freedict-database.json";
     private ArrayList<String> urlsToDownload = new ArrayList<>();
     private Integer totalSize = 0;
     private Integer downloadedSize = 0;
+
+    public static DownloadLayoutController instance;
 
     @FXML
     private Button downloadButton;
@@ -66,6 +68,7 @@ public class DownloadLayoutController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        DownloadLayoutController.instance = this;
 //        if (true) {
 //            try {
 //                handleExtract();
@@ -247,7 +250,7 @@ public class DownloadLayoutController implements Initializable {
         new Thread(task).start();
 
     }
-    private void handleParsing() throws IOException, ArchiveException {
+    public void handleParsing() throws IOException, ArchiveException {
 
         progressBarText.setText("Parsing dictionaries to my indexed system! Some of the files are very big we need indexes!");
         downloadProgress.setProgress(0);
@@ -304,10 +307,27 @@ public class DownloadLayoutController implements Initializable {
 
     }
 
-    private void handleFetch() throws IOException {
+    public void handleFetch() throws IOException {
 
         // First lets get json from API
         fetchButton.setDisable(true);
+        Map<Integer,ArrayList<String>> item = handleFetch(apiURL);
+
+        urlsToDownload = item.get(item.keySet().toArray()[0]);
+        totalSize = Integer.parseInt(item.keySet().toArray()[0].toString());
+        messageText.setText("Total of " + urlsToDownload.size() +
+                " dictionaries found with total download size of " + FileUtils.byteCountToDisplaySize(totalSize) +
+                ". Do you want to download?");
+
+        downloadButton.setDisable(false);
+        fetchButton.setDisable(false);
+
+    }
+    public static Map<Integer,ArrayList<String>> handleFetch(String apiURL) throws IOException {
+        ArrayList<String> urlsToDownload = new ArrayList<>();
+        Integer totalSize =0;
+
+        // First lets get json from API
         URL url = new URL(apiURL);
         String json = IOUtils.toString(url, Charset.forName("UTF-8"));
         JSONArray apiResult = new JSONArray(json);
@@ -340,12 +360,11 @@ public class DownloadLayoutController implements Initializable {
             }
         }
 
-        messageText.setText("Total of " + urlsToDownload.size() +
-                " dictionaries found with total download size of " + FileUtils.byteCountToDisplaySize(totalSize) +
-                ". Do you want to download?");
+        Map<Integer,ArrayList<String>> result = new HashMap<>();
 
-        downloadButton.setDisable(false);
-        fetchButton.setDisable(false);
+        result.put(totalSize,urlsToDownload);
+
+        return result;
 
     }
 
@@ -445,5 +464,13 @@ public class DownloadLayoutController implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+    public Button getFetchButton() {
+        return fetchButton;
+    }
+
+    public Text getMessageText() {
+        return messageText;
     }
 }

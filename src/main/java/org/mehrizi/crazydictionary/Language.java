@@ -25,7 +25,7 @@ public class Language {
         langs.put("tur","Turkish");
         langs.put("ita","Italian");
         langs.put("swe","Swedish");
-        langs.put("ell","Greek");
+        langs.put("ell","Modern Greek");
 
     }
     public static String getShortForm(String longForm) {
